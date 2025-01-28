@@ -2765,8 +2765,20 @@ return [
             'options' => [
                 'image' => 'image',
                 'video' => 'video',
+                'slideshow' => 'slideshow',
             ],
             'value' => $config['background']['type'],
+        ],
+        'background_slideshow_duration' => [
+            'view' => 'advanced',
+            'type' => 'range',
+            'placeholder' => $defaultConfig['background']['slideshow_duration'],
+            'name' => 'background[slideshow_duration]',
+            'value' => $config['background']['slideshow_duration'],
+            'range_min' => 1,
+            'range_max' => 120,
+            'range_step' => 1,
+            'unit' => 'seconds',
         ],
         'background_video' => [
             'view' => 'expert',

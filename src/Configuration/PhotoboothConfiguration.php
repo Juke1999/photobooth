@@ -26,6 +26,7 @@ class PhotoboothConfiguration implements ConfigurationInterface
                 ->append($this->addDev())
                 ->append($this->addWebserver())
                 ->append($this->addStartScreen())
+                ->append($this->addSlideShowBackground())
                 ->append($this->addLogo())
                 ->append($this->addDownload())
                 ->append($this->addReload())
@@ -654,6 +655,15 @@ class PhotoboothConfiguration implements ConfigurationInterface
                 ->scalarNode('admin')->defaultValue('')->end()
                 ->scalarNode('type')->defaultValue('image')->end()
                 ->scalarNode('video')->defaultValue('')->end()
+                ->integerNode('slideshow_duration')
+                    ->defaultValue(10)
+                    ->min(1)
+                    ->max(120)
+                    ->beforeNormalization()
+                        ->ifString()
+                        ->then(function (string $value): int { return intval($value); })
+                        ->end()
+                    ->end()
             ->end();
     }
 
@@ -1049,6 +1059,15 @@ class PhotoboothConfiguration implements ConfigurationInterface
                     ->defaultValue(100)
                     ->min(100)
                     ->max(200)
+                    ->beforeNormalization()
+                        ->ifString()
+                        ->then(function (string $value): int { return intval($value); })
+                        ->end()
+                    ->end()
+                ->integerNode('slideshow_duration')
+                    ->defaultValue(10)
+                    ->min(1)
+                    ->max(120)
                     ->beforeNormalization()
                         ->ifString()
                         ->then(function (string $value): int { return intval($value); })
@@ -1603,6 +1622,25 @@ class PhotoboothConfiguration implements ConfigurationInterface
                         ->then(function (string $value): int { return intval($value); })
                         ->end()
                     ->end()
+            ->end();
+    }
+    
+    protected function addSlideShowBackground(): NodeDefinition
+    {
+        return (new TreeBuilder('slideshow'))->getRootNode()->addDefaultsIfNotSet()
+            ->ignoreExtraKeys()
+            ->children()
+            ->integerNode('duration')
+            ->defaultValue(10)
+            ->min(2)
+            ->max(120)
+            ->beforeNormalization()
+            ->ifString()
+            ->then(function (string $value): int {
+                return intval($value);
+            })
+            ->end()
+            ->end()
             ->end();
     }
 }

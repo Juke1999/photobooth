@@ -78,6 +78,17 @@ class ImageUtility
         return $files[array_rand($files)];
     }
 
+    public static function getRandomImageFromPathForSlideshow(string $path): string
+    {
+        $files = self::getImagesFromPath($path);
+
+        if (count($files) === 0) {
+            throw new \Exception('Path ' . $path . ' does not contain images.');
+        }
+
+        return $files[array_rand($files)];
+    }
+
     public static function getDemoImages(int $filecount = 0): array
     {
         $primaryFolder = 'private/images/demo';

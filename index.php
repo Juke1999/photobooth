@@ -40,6 +40,7 @@ include PathUtility::getAbsolutePath('template/components/main.head.php');
 ?>
 
 <body class="gallery-mode--overlay ">
+
 <?php include PathUtility::getAbsolutePath('template/components/video.background.php'); ?>
 <?php include PathUtility::getAbsolutePath('template/components/preview.php'); ?>
 
@@ -78,11 +79,79 @@ include PathUtility::getAbsolutePath('template/components/main.footer.php');
 if ($config['ui']['selfie_mode']) {
     echo '<script src="' . $assetService->getUrl('resources/js/selfie.js') . '"></script>';
 }
+
+if ($config['background']['type'] === 'slideshow') {
+    echo '<script src="' . $assetService->getUrl('resources/js/backgroundSlideshow.js') . '"></script>';
+}
 ?>
 
-<script src="<?=$assetService->getUrl('resources/js/preview.js')?>"></script>
-<script src="<?=$assetService->getUrl('resources/js/virtualKeyboard.js')?>"></script>
-<script src="<?=$assetService->getUrl('resources/js/core.js')?>"></script>
+<script>
+    window.onload = function() {
+        // Add the click event listener to the document
+        document.addEventListener('click', function(event) {
+            if (event.button === 0 || event.leftClick) {
+                document.getElementsByClassName("takePic")[0].dispatchEvent(new MouseEvent('click'))
+            }
+        });
+    }
+</script>
+
+<!-- <script>
+    function trackLongClick(element, duration = 500) {
+        let isClicking = false;
+        let clickStartTime;
+
+        // Track mouse events
+        element.addEventListener('mousedown', (e) => {
+            if (!isClicking) {
+                isClicking = true;
+                clickStartTime = Date.now();
+            } else {
+                // If another click happens while holding, reset the timer
+                isClicking = true;
+                clickStartTime = Date.now();
+            }
+
+            let currentTime = Date.now();
+            let durationTime = currentTime - clickStartTime;
+
+            while (durationTime < 500) {
+                currentTime = Date.now();
+                durationTime = currentTime - clickStartTime
+                continue;
+            }
+            
+            console.log("LONG PRESSEROO!");
+        });
+
+        element.addEventListener('mouseup', (e) => {
+            if (isClicking) {
+                const currentTime = Date.now();
+                const durationTime = currentTime - clickStartTime;
+
+                if (durationTime > duration) {
+                    alert(`Long click detected! Duration: ${durationTime}ms`);
+                }
+
+                isClicking = false;
+            }
+        });
+
+        element.addEventListener('mouseleave', () => {
+            // Click ends when mouse leaves the element
+            isClicking = false;
+        });
+    }
+
+    // Initialize the global handler
+    document.addEventListener('DOMContentLoaded', () => {
+        trackLongClick(document, 0);
+    });
+</script> -->
+
+<script src="<?= $assetService->getUrl('resources/js/preview.js') ?>"></script>
+<script src="<?= $assetService->getUrl('resources/js/virtualKeyboard.js') ?>"></script>
+<script src="<?= $assetService->getUrl('resources/js/core.js') ?>"></script>
 
 <?php include PathUtility::getAbsolutePath('template/components/start.adminshortcut.php'); ?>
 <?php ProcessService::getInstance()->boot(); ?>

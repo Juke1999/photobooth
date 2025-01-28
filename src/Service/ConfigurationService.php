@@ -117,6 +117,10 @@ class ConfigurationService
             $config['background']['chroma'] = 'url(' . $bg_url . ')';
         }
 
+        if (empty($config['background']['slideshow_duration'])) {
+            $config['background']['slideshow_duration'] = 10;
+        }
+
         if (empty($config['remotebuzzer']['serverip'])) {
             $config['remotebuzzer']['serverip'] = Environment::getIp();
         }
