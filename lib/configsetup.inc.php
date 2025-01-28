@@ -1,6 +1,8 @@
 <?php
 
+use Photobooth\Enum\CollageLayoutEnum;
 use Photobooth\Enum\ImageFilterEnum;
+use Photobooth\Enum\MailSecurityTypeEnum;
 use Photobooth\Enum\TimezoneEnum;
 use Photobooth\Service\ConfigurationService;
 use Photobooth\Service\LanguageService;
@@ -490,9 +492,13 @@ return [
         ],
         'picture_rotation' => [
             'view' => 'advanced',
-            'type' => 'number',
+            'type' => 'range',
             'placeholder' => $defaultConfig['picture']['rotation'],
             'name' => 'picture[rotation]',
+            'range_min' => -359,
+            'range_max' => 359,
+            'range_step' => 1,
+            'unit' => 'degrees',
             'value' => $config['picture']['rotation'],
         ],
         'picture_polaroid_effect' => [
@@ -769,22 +775,7 @@ return [
             'type' => 'select',
             'name' => 'collage[layout]',
             'placeholder' => $defaultConfig['collage']['layout'],
-            'options' => [
-                '2+2-1' => '2+2',
-                '2+2-2' => '2+2 (2)',
-                '1+3-1' => '1+3',
-                '1+3-2' => '1+3 (2)',
-                '3+1' => '3+1',
-                '1+2' => '1+2',
-                '2+1' => '2+1',
-                '2x4-1' => '2x4',
-                '2x4-2' => '2x4 (2)',
-                '2x4-3' => '2x4 (3)',
-                '2x4-4' => '2x4 (4)',
-                '2x3-1' => '2x3',
-                '2x3-2' => '2x3 (2)',
-                'collage.json' => 'private/collage.json',
-            ],
+            'options' => CollageLayoutEnum::cases(),
             'value' => $config['collage']['layout'],
         ],
         'layout_generator' => [
@@ -1465,12 +1456,11 @@ return [
             'placeholder' => $defaultConfig['keying']['seriouslyjs_color'],
             'value' => $config['keying']['seriouslyjs_color'],
         ],
-        'keying_background_path' => [
+        'keying_private_backgrounds' => [
             'view' => 'expert',
-            'type' => 'input',
-            'placeholder' => $defaultConfig['keying']['background_path'],
-            'name' => 'keying[background_path]',
-            'value' => htmlentities($config['keying']['background_path'] ?? ''),
+            'type' => 'checkbox',
+            'name' => 'keying[private_backgrounds]',
+            'value' => $config['keying']['private_backgrounds'],
         ],
         'keying_show_all' => [
             'view' => 'expert',
@@ -1956,7 +1946,7 @@ return [
             'value' => htmlentities($config['mail']['password'] ?? ''),
         ],
         'mail_fromAddress' => [
-            'view' => 'advanced',
+            'view' => 'basic',
             'type' => 'input',
             'placeholder' => $defaultConfig['mail']['fromAddress'],
             'name' => 'mail[fromAddress]',
@@ -1977,14 +1967,15 @@ return [
             'value' => $config['mail']['file'],
         ],
         'mail_secure' => [
-            'view' => 'expert',
-            'type' => 'input',
-            'placeholder' => $defaultConfig['mail']['secure'],
+            'view' => 'basic',
+            'type' => 'select',
             'name' => 'mail[secure]',
+            'placeholder' => $defaultConfig['mail']['secure'],
+            'options' => MailSecurityTypeEnum::cases(),
             'value' => $config['mail']['secure'],
         ],
         'mail_port' => [
-            'view' => 'expert',
+            'view' => 'basic',
             'type' => 'number',
             'placeholder' => $defaultConfig['mail']['port'],
             'name' => 'mail[port]',

@@ -2,7 +2,9 @@
 
 namespace Photobooth\Configuration;
 
+use Photobooth\Enum\CollageLayoutEnum;
 use Photobooth\Enum\ImageFilterEnum;
+use Photobooth\Enum\MailSecurityTypeEnum;
 use Photobooth\Enum\TimezoneEnum;
 use Photobooth\Environment;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
@@ -110,7 +112,18 @@ class PhotoboothConfiguration implements ConfigurationInterface
                 ->scalarNode('fromAddress')->defaultValue('photobooth@example.com')->end()
                 ->scalarNode('fromName')->defaultValue('Photobooth')->end()
                 ->scalarNode('file')->defaultValue('mail-adresses')->end()
-                ->scalarNode('secure')->defaultValue('tls')->end()
+                ->enumNode('secure')
+                    ->values(MailSecurityTypeEnum::cases())
+                    ->defaultValue(MailSecurityTypeEnum::TLS)
+                    ->beforeNormalization()
+                        ->always(function ($value) {
+                            if (is_string($value)) {
+                                $value = MailSecurityTypeEnum::from($value);
+                            }
+                            return $value;
+                        })
+                        ->end()
+                    ->end()
                 ->integerNode('port')
                     ->defaultValue(587)
                     ->beforeNormalization()
@@ -640,7 +653,7 @@ class PhotoboothConfiguration implements ConfigurationInterface
                     ->defaultValue('seriouslyjs')
                     ->end()
                 ->scalarNode('seriouslyjs_color')->defaultValue('#62af74')->end()
-                ->scalarNode('background_path')->defaultValue('resources/img/background')->end()
+                ->booleanNode('private_backgrounds')->defaultValue(false)->end()
                 ->booleanNode('show_all')->defaultValue(false)->end()
             ->end();
     }
@@ -1496,12 +1509,16 @@ class PhotoboothConfiguration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->enumNode('layout')
-                    ->values([
-                        '2+2-1', '2+2-2', '1+3-1', '1+3-2', '3+1', '1+2', '2+1',
-                        '2x4-1', '2x4-2', '2x4-3', '2x4-4', '2x3-1', '2x3-2',
-                        'collage.json',
-                    ])
-                    ->defaultValue('2+2-2')
+                    ->values(CollageLayoutEnum::cases())
+                    ->defaultValue(CollageLayoutEnum::TWO_PLUS_TWO_2)
+                    ->beforeNormalization()
+                        ->always(function ($value) {
+                            if (is_string($value)) {
+                                $value = CollageLayoutEnum::from($value);
+                            }
+                            return $value;
+                        })
+                        ->end()
                     ->end()
                 ->enumNode('resolution')
                     ->values(['150dpi', '300dpi', '400dpi', '600dpi'])
